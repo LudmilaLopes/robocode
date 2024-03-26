@@ -1,5 +1,4 @@
-package Legacy;
-import robocode.*;
+mport robocode.*;
 import java.awt.Color;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
 import robocode.util.*;
@@ -13,13 +12,17 @@ import java.awt.geom.*;
     public void run() {
         setColors(Color.cyan,Color.black,Color.black,Color.white,Color.blue);
         // Definindo posição inicial e direção do robo
-        setAdjustGunForRobotTurn(true);
+    
+		//girar o radar o máximo possível.  
+	
+			 
+		setAdjustGunForRobotTurn(true);
         setAdjustRadarForGunTurn(true);
-        setAdjustRadarForRobotTurn(true);
 
+		setTurnGunRight ( Double . POSITIVE_INFINITY ) ;
         // Dando vida ao robo em um loop infinito
         while (true) {
-            setVelocityRate(5);
+            setVelocityRate(4);
             setTurnRateRadians(0);
             execute();
             turnRadarRight(360);
@@ -38,20 +41,19 @@ import java.awt.geom.*;
         double altDoCampDeBatalha = getBattleFieldHeight(),larDoCampDeBatalha = getBattleFieldWidth();
         double previsaoX = inimigoX, previsaoY = inimigoY;
         
-        previsaoX += Math.sin(posicaoDoInimigo) * velocidadeDoInimigo;
-        previsaoY += Math.cos(posicaoDoInimigo) * velocidadeDoInimigo;
-        if (previsaoX < 18.0 || previsaoY < 18.0 || previsaoX > larDoCampDeBatalha - 18.0 || previsaoY > altDoCampDeBatalha - 18.0) {
-            previsaoX = Math.min(Math.max(18.0, previsaoX), larDoCampDeBatalha - 18.0);
-            previsaoY = Math.min(Math.max(18.0, previsaoY), altDoCampDeBatalha - 18.0);
+        previsaoX += Math.sin(posicaoDoInimigo) * velocidadeDoInimigo - 5.0;
+        previsaoY += Math.cos(posicaoDoInimigo) * velocidadeDoInimigo - 5.0;
+        if (previsaoX < 5.0 || previsaoY < 5.0 || previsaoX > larDoCampDeBatalha - 5.0 || previsaoY > altDoCampDeBatalha - 5.0) {
+            previsaoX = Math.min(Math.max(5.0, previsaoX), larDoCampDeBatalha - 5.0);
+            previsaoY = Math.min(Math.max(5.0, previsaoY), altDoCampDeBatalha - 5.0);
         }
-        
+  
         double anguloAbsoluto = Utils.normalAbsoluteAngle(
             Math.atan2(
                 previsaoX - getX(), previsaoY - getY()
             )
         );
-        
-        setTurnRightRadians(distancia / 2 * - 1 - getRadarHeadingRadians());
+        setTurnRightRadians(distancia / 4 * - 1 - getRadarHeadingRadians());
         setTurnRadarRightRadians(Utils.normalRelativeAngle(distancia - getRadarHeadingRadians()));
         setTurnGunRightRadians(Utils.normalRelativeAngle(anguloAbsoluto - getGunHeadingRadians()));
         fire(potenciaDoTiro);
@@ -70,18 +72,19 @@ import java.awt.geom.*;
     /**
      * onHitByBullet: É executado quando o robô leva um tiro.
      */
+	
     public void onHitByBullet(HitByBulletEvent e) {
         double giroDoRadar = normalRelativeAngleDegrees(e.getBearing() + getHeading() - getRadarHeading());
         setTurnRadarRight(giroDoRadar);
-        setTurnLeft(-3);
-        setTurnRate(3);
-        setVelocityRate(-1 * getVelocityRate());
+        setTurnLeft(-4);
+        setTurnRate(4);
+        setVelocityRate(-3 * getVelocityRate());
     }
     /**
      * onHitWall: É executado quando o robô colide com a parede.
      */
     public void onHitWall(HitWallEvent e) {
-        setVelocityRate(+1 * getVelocityRate());
+        setVelocityRate(+3 * getVelocityRate());
         setTurnRate(getTurnRate() + 2);
         execute();
     }
@@ -104,4 +107,3 @@ import java.awt.geom.*;
             uhuu = uhuu * -1;
         }
     }
-}
